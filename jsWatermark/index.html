@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>测试动态水印</title>
+</head>
+<body>
+    <div id="app" style="width: 100%; height: 500px;"></div>
+    <script src='./textToImage.js'></script>
+    <script>
+        const imageStyle = {
+            marginX: 60,
+            marginY: 90,
+            line2Coordinate: '75px 75px',
+            line3Coordinate: '150px 150px',
+        }
+        const imageUrl = generateImage('测试的水印', {
+            textColor: '#EDEFF5',
+            fontSize: 13,
+            rotate: -30,
+            fontFamily: 'PingFangSC-Thin',
+            ...imageStyle,
+        })
+        const style = document.getElementById('app').style
+        // 如果水印只用一个图片的话，会对的很齐，显得很死板，所以这里用3个图片循环
+        style.backgroundImage = `url(${imageUrl}), url(${imageUrl}), url(${imageUrl})`
+        style.backgroundRepeat = 'repeat, repeat, repeat'
+        style.backgroundPosition = `0 0, ${imageStyle.line2Coordinate}, ${imageStyle.line3Coordinate}`
+    </script>
+</body>
+</html>
