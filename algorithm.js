@@ -77,3 +77,144 @@ const tailFacttail = (v, s = 1) => {
     return v <= 1 ? s : tailFacttail(v - 1, s * v)
 }
 
+/**************************************************************************/
+/**
+ * 给定一个正整数组a，是否能以3个数为边长构成三角形?
+• 即是否存在不同的i，j，k，
+• 满足 a[i] < a[j] + a[k]
+• 并且 a[j] < a[i] + a[k]
+• 并且 a[k] < a[i] + a[j]
+ */
+const getTriggleValues1 = (arr) => {
+    // 方法1， 穷举
+    const isTriggleValues = (v1, v2, v3) =>
+        v1 + v2 > v3 && v1 + v3 > v2 && v2 + v3 > v1
+    const len = arr.length
+    const res = []
+    for (let i = 0; i < len - 2; i++) {
+        for (let j = i + 1; j < len - 1; j++) {
+            for (let m = j + 1; m < len; m++) {
+                const values = [arr[i], arr[j], arr[m]]
+                if (isTriggleValues(...values)) {
+                    res.push(values)
+                }
+            }
+        }
+    }
+    return res
+}
+
+const getTriggleValues2 = (arr) => {
+    // 方法2： 先排序，减少最后一层循环操作
+    const len = arr.length
+    const res = []
+    arr.sort((a, b) => a - b)
+    for (let i = 0; i < len - 2; i++) {
+        for (let j = i + 1; j < len - 1; j++) {
+            for (let m = j + 1; m < len; m++) {
+                if (arr[i] + arr[j] > arr[m]) {
+                    res.push([arr[i], arr[j], arr[m]])
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+    return res
+}
+
+
+/**
+ * 给定一个整数数组 nums ，找出一个序列中乘积最大的连续子序列（该序列至少包含一个数）。
+ *  输入: [2,3,-2,4]
+    输出: 6
+    解释: 子数组 [2,3] 有最大乘积 6。
+ */
+var maxProduct = function(nums) {
+    let max = nums[0];
+    let tempMin = nums[0];
+    let tempMax = nums[0];
+    const len = nums.length;
+
+    // 由于乘积的话，需要考虑最大负数的情况，所以需要存储最小值，当循环的乘数变为负数时，最小值和最大值互换位置
+    for (let i = 1; i < len; i++) {
+        const v = nums[i];
+        if (v < 0) {
+            [tempMin, tempMax] = [tempMax, tempMin];   
+        }
+        tempMax = Math.max(v, tempMax * v);
+        tempMin = Math.min(v, tempMin * v);
+        
+        max = Math.max(tempMax, max)
+    }
+    
+    return max
+}
+
+/**
+ * 最小栈: 设计一个支持 push，pop，top 操作，并能在常数时间内检索到最小元素的栈。
+    push(x) -- 将元素 x 推入栈中。
+    pop() -- 删除栈顶的元素。
+    top() -- 获取栈顶元素。
+    getMin() -- 检索栈中的最小元素。
+ */
+/**
+ * initialize your data structure here.
+ */
+var MinStack = function() {
+    this.arr = []
+    this.min = Infinity;
+};
+
+/** 
+ * @param {number} x
+ * @return {void}
+ */
+MinStack.prototype.push = function(x) {
+  if (x < this.min) {
+      this.min = x;
+  }
+  this.arr.push(x)
+};
+
+/**
+ * @return {void}
+ */
+MinStack.prototype.pop = function() {
+    const len = this.arr.length
+    if (!len) {
+        return null
+    }
+    
+    const lastV = this.arr.pop();
+    if (lastV === this.min) {
+        this.min = Math.min(...this.arr)
+    }
+    
+    return null;
+};
+
+/**
+ * @return {number}
+ */
+MinStack.prototype.top = function() {
+    const len = this.arr.length
+    try {
+        return len === 0 ? null : this.arr[len - 1]
+    } catch (e) {
+        console.log(e)
+    }
+};
+
+/**
+ * @return {number}
+ */
+MinStack.prototype.getMin = function() {
+    return this.min
+};
+
+const test = () => {
+    
+}
+
+test()
