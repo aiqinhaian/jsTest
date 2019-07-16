@@ -213,6 +213,40 @@ MinStack.prototype.getMin = function() {
     return this.min
 };
 
+
+/**
+ * @param {array}
+ * @return {number}
+ * 给定一个未排序的整数数组，找出最长连续序列的长度。要求算法的时间复杂度为 O(n)。
+ * 示例:
+ * 输入: [100, 4, 200, 1, 3, 2]
+ * 输出: 4
+ * 解释: 最长连续序列是 [1, 2, 3, 4]。它的长度为 4。
+ */
+var longestConsecutive = function(nums) {
+    if (nums.length === 0) {
+        return 0
+    }
+    const arr = Array.from(new Set(nums))
+    const m = {}
+    for (let i = 0; i < arr.length; i++) {
+        const v = arr[i]
+        if (m[v - 1] && m[v + 1]) {
+            m[m[v - 1][0]][1] = m[v + 1][1]
+            m[m[v + 1][1]][0] = m[v - 1][0]
+        } else if (m[v - 1]) {
+            m[v - 1][1] = v
+            m[v] = m[v - 1]
+        } else if (m[v + 1]) {
+            m[v + 1][0] = v
+            m[v] = m[v + 1]
+        } else {
+            m[v] = [v, v]
+        }
+    }
+    return Math.max(...Object.values(m).map(item => item[1] - item[0] + 1))
+}
+
 const test = () => {
     
 }
