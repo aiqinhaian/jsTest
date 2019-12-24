@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <p>当前在线人数：<span id="man">...</span></p>
+    <input type="text" placeholder="输入信息" id="myText" value="" />
+    <button id="sendData">发送</button>
+
+    <ul id="say-list">
+
+    </ul>
+
+<script>
+    // var a = document.createElement("a");
+    // a.href = window.location.href;
+    // var host = a.hostname + ":" + a.port;
+    var host = 'localhost:12010'
+    var ws = createWebsocket();
+    var isOK = false;
+    var ul = document.getElementById("say-list");
+
+    document.getElementById("myText").onkeyup = function(e){
+        if(e.keyCode == 13){
+            document.getElementById("sendData").click();
+        }
+    }
+
+    document.getElementById("sendData").onclick = function(){
+        if(!isOK){
+            alert("websocket 断开了连接");
+            return;
+        }
+
+        var value = document.getElementById("myText").value;
+        if(value.length){
+            console.log("发送"+value);
+            ws.send(value);
+        }else {
+            alert("内容不能为空")
+        }
+    };
+
+    function createWebsocket(){
+        var websocket = new WebSocket("ws://"+host+"/");
+
+        websocket.onopen = function(){
+            console.log("open");
+            isOK = true;
+        };
+
+        websocket.onmessage = function(e){
+            console.log(e)
+            if(e.data.indexOf("man:")>=0){
+                document.getElementById("man").innerHTML = e.data.split(":" , 2)[1];
+                return;
+            }
+
+            var element = document.createElement("li");
+            var temp = new Date();
+            var regex = /\//g;
+            temp = (temp.toLocaleDateString() + ' ' + temp.toLocaleTimeString().slice(2)).replace(regex,'-')
+
+            element.innerHTML = temp + " : " + e.data;
+            ul.appendChild(element);
+        };
+
+        websocket.onclose = function(){
+            console.log("close");
+            isOK = false;
+
+            setTimeout(function(){
+                ws = createWebsocket();
+            } , 2000);
+        };
+
+        return websocket
+    }
+</script>
+</body>
+</html>
