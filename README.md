@@ -5,3 +5,4 @@
 - postMessage -> postMessage 实现 iframe 间通信
 - jsWaterremark -> js动态生成页面水印
 - algorithm.js -> 算法用 js 的实现
+- websocket -> websocket 的实现
